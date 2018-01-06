@@ -1,5 +1,6 @@
 package com.coolweather.android;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -77,12 +78,21 @@ public class ChooseAreaFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //i:position  l=id
                 if (currentLevel==LEVEL_PROVINCE){
                     selectedProvince=provinceList.get(i);
                     queryCities();
                 }else if (currentLevel==LEVEL_CITY){
                     selectedCity=cityList.get(i);
                     queryCounties();
+                }else if (currentLevel==LEVEL_COUNTY){
+                    //若选中状态为县，则准备显示具体天气
+                    String weatherId=countyList.get(i).getWeatherId();
+                    //通过Intent 将weatherId传给WeatherActivity
+                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
