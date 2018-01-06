@@ -88,11 +88,21 @@ public class ChooseAreaFragment extends Fragment {
                 }else if (currentLevel==LEVEL_COUNTY){
                     //若选中状态为县，则准备显示具体天气
                     String weatherId=countyList.get(i).getWeatherId();
-                    //通过Intent 将weatherId传给WeatherActivity
-                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    //判断当前Activity是否是MainActivity
+                    if (getActivity() instanceof MainActivity){
+                        //通过Intent 将weatherId传给WeatherActivity
+                        Intent intent=new Intent(getActivity(),WeatherActivity.class);
+                        intent.putExtra("weather_id",weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if (getActivity() instanceof WeatherActivity){
+                        WeatherActivity activity=(WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);
+                        //当当前在WeatherActivity时，则直接再次请求天气信息
+                        activity.requestWeather(weatherId);
+                    }
+
                 }
             }
         });
